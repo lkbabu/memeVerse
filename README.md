@@ -5,7 +5,7 @@
 * User login and registration
 * Users will be able to share memes with other users
 * Users will be able like and comment on memes shared by other users
-* Users also can like and comment on memes shared by other users
+* Users will be able to see memes shared by other users 
 
 
 
