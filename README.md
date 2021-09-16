@@ -21,5 +21,5 @@
   - Create `.env` file in `backend`
   - Update `.env` file with `MONGODB_URI=YOUR-MONGODB-URI` 
 - Running the application in development mode
-  -  Fontend only: `cd fontend` then `npm start` then open `http://localhost:3000` in a browser
+  -  Frontend only: `cd fontend` then `npm start` then open `http://localhost:3000` in a browser
   - Backend only: `cd backend` then `npm run serve` then open `http://localhost:5000` in a browser
