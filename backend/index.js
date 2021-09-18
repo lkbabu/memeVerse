@@ -18,13 +18,10 @@ const startServer = async () => {
   });
 
   await server.start();
-
   server.applyMiddleware({ app: app });
-
   app.use((req, res) => {
     res.send("express apollo server is running");
   });
-
   await mongoose.connect(URL, {
     useNewUrlParser: true,
   });
