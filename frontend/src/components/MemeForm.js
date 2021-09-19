@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import { Button, Form } from "semantic-ui-react";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/client";
@@ -7,13 +8,19 @@ import { useForm } from "../util/hooks";
 import { FETCH_POSTS_QUERY } from "../util/Query";
 
 function MemeForm() {
+  const [imageFile, setImage] = useState("");
+  const [url, setUrl] = useState("");
+
   const { values, onChange, onSubmit } = useForm(createPostCallback, {
     body: "",
     image: "",
   });
 
   const [createPost, { error }] = useMutation(CREATE_POST_MUTATION, {
-    variables: values,
+    variables: {
+      body: values.body,
+      image: url,
+    },
     update(proxy, result) {
       const data = proxy.readQuery({
         query: FETCH_POSTS_QUERY,
@@ -33,8 +40,25 @@ function MemeForm() {
       values.body = "";
     },
   });
+  const handleImageUpload = async () => {
+    const data = new FormData();
+    data.append("file", imageFile);
+    data.append("upload_preset", "USEYOURPRESET");
+    data.append("cloud_name", "CLOUDNAME");
 
-  function createPostCallback() {
+    const res = await axios.post(
+      `https://api.cloudinary.com/v1_1/CLOUDNAME/image/upload`,
+      data
+    );
+
+    setUrl(res.data.url);
+  };
+  const onFileChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
+  async function createPostCallback() {
+    await handleImageUpload();
     createPost();
   }
 
@@ -44,10 +68,9 @@ function MemeForm() {
         <h2>Create a post:</h2>
 
         <Form.Field>
-          <Button as="label" htmlFor="file" type="button">
-            Upload Image
-          </Button>
-          <input type="file" id="file" hidden />
+          <div>
+            <input type="file" onChange={onFileChange} />
+          </div>
         </Form.Field>
 
         <Form.Field>
@@ -72,6 +95,7 @@ const CREATE_POST_MUTATION = gql`
     createPost(body: $body, image: $image) {
       id
       body
+      image
       createdAt
       username
       likes {
